@@ -1,5 +1,4 @@
 {
-  stdenv,
   fetchFromGitHub,
   cmake,
   mpi,
@@ -15,7 +14,7 @@
   zstd,
   cudaPackages,
 }:
-stdenv.mkDerivation rec {
+cudaPackages.backendStdenv.mkDerivation rec {
   name = "relion";
   version = "5.0.0";
 
