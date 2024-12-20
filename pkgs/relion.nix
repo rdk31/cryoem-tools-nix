@@ -22,7 +22,7 @@ stdenv.mkDerivation rec {
   src = fetchFromGitHub {
     owner = "3dem";
     repo = "relion";
-    tag = version;
+    rev = version;
     sha256 = "sha256-NDqqgQ/De7PECZ8hRvMCK+1htDyqXo6aIdUOcJ7abiE=";
   };
 
