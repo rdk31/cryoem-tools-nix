@@ -1,5 +1,5 @@
 {
-  description = "CryoEM flake";
+  description = "CryoEM tools flake";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
@@ -19,13 +19,14 @@
         { config, pkgs, ... }:
         let
           TEM-simulator = pkgs.callPackage ./pkgs/TEM-simulator.nix { };
+          relion = pkgs.callPackage ./pkgs/relion.nix { };
         in
         {
           packages = {
-            inherit TEM-simulator;
+            inherit TEM-simulator relion;
           };
           overlayAttrs = {
-            inherit (config.packages) TEM-simulator;
+            inherit (config.packages) TEM-simulator relion;
           };
         };
     };
