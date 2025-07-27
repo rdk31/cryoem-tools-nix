@@ -21,13 +21,24 @@
           TEM-simulator = pkgs.callPackage ./pkgs/TEM-simulator.nix { };
           relion = pkgs.callPackage ./pkgs/relion.nix { };
           ctffind = pkgs.callPackage ./pkgs/ctffind.nix { };
+          cisTEM = pkgs.callPackage ./pkgs/cisTEM.nix { };
         in
         {
           packages = {
-            inherit TEM-simulator relion ctffind;
+            inherit
+              TEM-simulator
+              relion
+              ctffind
+              cisTEM
+              ;
           };
           overlayAttrs = {
-            inherit (config.packages) TEM-simulator relion ctffind;
+            inherit (config.packages)
+              TEM-simulator
+              relion
+              ctffind
+              cisTEM
+              ;
           };
         };
     };
