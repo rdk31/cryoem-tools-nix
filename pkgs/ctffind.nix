@@ -10,7 +10,6 @@
   mklSupport ? true,
   mkl,
 }:
-
 stdenv.mkDerivation (finalAttrs: {
   pname = "ctffind";
   version = "4.1.14";
@@ -21,7 +20,6 @@ stdenv.mkDerivation (finalAttrs: {
   };
 
   buildInputs = [
-    mkl
     wxGTK32
     fftw
     fftw.dev
@@ -31,4 +29,5 @@ stdenv.mkDerivation (finalAttrs: {
     libtiff
     (lib.optional mklSupport mkl)
   ];
+  enableParallelBuilding = true;
 })
