@@ -7,6 +7,7 @@
   fftwFloat,
   libz,
   libtiff,
+  libjpeg,
   mklSupport ? true,
   mkl,
 }:
@@ -27,6 +28,7 @@ stdenv.mkDerivation (finalAttrs: {
     fftwFloat.dev
     libz
     libtiff
+    libjpeg
     (lib.optional mklSupport mkl)
   ];
   enableParallelBuilding = true;
