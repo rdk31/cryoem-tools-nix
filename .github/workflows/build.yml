@@ -1,0 +1,25 @@
+name: build
+
+on:
+  push:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - cisTEM
+          - ctffind
+          - relion
+          - TEM-simulator
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install nix
+        uses: DeterminateSystems/nix-installer-action@main
+
+      - run: nix build --print-build-logs --impure .#packages.x86_64-linux.${{ matrix.package }}
+        env:
+          NIXPKGS_ALLOW_UNFREE: "1"
