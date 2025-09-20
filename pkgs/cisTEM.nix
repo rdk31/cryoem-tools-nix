@@ -8,6 +8,7 @@
   libtool,
   wxGTK32,
   libtiff,
+  libpng,
   mklSupport ? true,
   mkl,
 }:
@@ -25,6 +26,7 @@ stdenv.mkDerivation (finalAttrs: {
   buildInputs = [
     wxGTK32
     libtiff
+    libpng
     (lib.optional mklSupport mkl)
   ];
 
@@ -42,5 +44,4 @@ stdenv.mkDerivation (finalAttrs: {
     ./regenerate_project.b
     ./configure --prefix=$out --enable-experimental
   '';
-
 })
