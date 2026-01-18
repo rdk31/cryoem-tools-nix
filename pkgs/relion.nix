@@ -56,13 +56,13 @@ let
 in
 cudaPackages.backendStdenv.mkDerivation rec {
   name = "relion";
-  version = "5.0.0";
+  version = "5.0.1";
 
   src = fetchFromGitHub {
     owner = "3dem";
     repo = "relion";
-    rev = "adfec821695e338d5ab435eb48ee3450f260cbb7";
-    sha256 = "sha256-yGPh6PfkKknxIG8IykquIzMQXDhgMCD6NbWRQbqOroM=";
+    rev = version;
+    sha256 = "sha256-wyNlz/ZXUlYUAnHGOlriVE1VP5vo5sbKFn4V/UHiLcg=";
   };
 
   nativeBuildInputs = [ cmake ];
@@ -72,6 +72,7 @@ cudaPackages.backendStdenv.mkDerivation rec {
     "-DFETCH_WEIGHTS=OFF"
     "-DCUDA_TOOLKIT_ROOT_DIR=${cudaPackages.cudatoolkit}"
     "-DPYTHON_EXE_PATH=${python}/bin/${python.executable}"
+    "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" # https://github.com/NixOS/nixpkgs/issues/445447
   ];
 
   hardeningDisable = [ "format" ];
