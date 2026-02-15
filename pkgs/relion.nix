@@ -6,7 +6,8 @@
   fftw,
   fftwFloat,
   fltk,
-  xorg,
+  libxft,
+  libx11,
   libtiff,
   libpng,
   pbzip2,
@@ -14,10 +15,9 @@
   zstd,
   cudaPackages,
   python3,
+  python3Packages,
 }:
 let
-  python3Packages = python3.pkgs;
-
   relionClassRanker = python3Packages.buildPythonPackage {
     pname = "relion-classranker";
     version = "0.0.1";
@@ -29,17 +29,11 @@ let
       hash = "sha256-rZ9q3oisXYFQaP/89ad9DQU5OEufil00JN17OLUV6Go=";
     };
 
-    dependencies =
-      with python3Packages;
-      let
-        torchOverride = torch.override { cudaSupport = true; };
-        torchVisionOverride = torchvision.override { torch = torchOverride; };
-      in
-      [
-        numpy
-        torchOverride
-        torchVisionOverride
-      ];
+    dependencies = with python3Packages; [
+      numpy
+      torch-bin
+      torchvision-bin
+    ];
 
     pyproject = true;
 
@@ -48,11 +42,7 @@ let
     ];
   };
 
-  python = python3.withPackages (
-    ps: with ps; [
-      relionClassRanker
-    ]
-  );
+  python = python3.withPackages (ps: [ relionClassRanker ]);
 in
 cudaPackages.backendStdenv.mkDerivation rec {
   name = "relion";
@@ -84,8 +74,8 @@ cudaPackages.backendStdenv.mkDerivation rec {
     ghostscript
 
     fltk
-    xorg.libXft
-    xorg.libX11
+    libxft
+    libx11
 
     fftw
     fftw.dev
