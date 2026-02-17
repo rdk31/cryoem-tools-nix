@@ -14,11 +14,11 @@
   xz,
   zstd,
   cudaPackages,
-  python3,
-  python3Packages,
+  python311,
+  python311Packages,
 }:
 let
-  relionClassRanker = python3Packages.buildPythonPackage {
+  relionClassRanker = python311Packages.buildPythonPackage {
     pname = "relion-classranker";
     version = "0.0.1";
 
@@ -29,7 +29,7 @@ let
       hash = "sha256-rZ9q3oisXYFQaP/89ad9DQU5OEufil00JN17OLUV6Go=";
     };
 
-    dependencies = with python3Packages; [
+    dependencies = with python311Packages; [
       numpy
       torch-bin
       torchvision-bin
@@ -37,12 +37,43 @@ let
 
     pyproject = true;
 
-    build-system = with python3Packages; [
+    build-system = with python311Packages; [
       setuptools
     ];
   };
 
-  python = python3.withPackages (ps: [ relionClassRanker ]);
+  topaz = python311Packages.buildPythonPackage {
+    pname = "topaz";
+    version = "0.2.5a";
+
+    src = fetchFromGitHub {
+      owner = "3dem";
+      repo = "topaz";
+      rev = "c8dd487cbf9d27139d0d430068033fb90dd9a393";
+      hash = "sha256-YHpXf6XkwVGpNPlZSwzKbslfIGZpPU6u1CIqnOdQI9c=";
+    };
+
+    dependencies = with python311Packages; [
+      torch-bin
+      numpy
+      pandas
+      scikit-learn
+      scipy
+      pillow
+      future
+    ];
+
+    pyproject = true;
+
+    build-system = with python311Packages; [
+      setuptools
+    ];
+  };
+
+  python = python311.withPackages (ps: [
+    relionClassRanker
+    topaz
+  ]);
 in
 cudaPackages.backendStdenv.mkDerivation rec {
   name = "relion";
