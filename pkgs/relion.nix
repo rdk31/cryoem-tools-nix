@@ -14,14 +14,14 @@
   xz,
   zstd,
   cudaPackages,
-  python311,
-  python311Packages,
+  python3,
+  python3Packages,
 }:
 let
-  torch = python311Packages.torch.override { cudaSupport = true; };
-  torchvision = python311Packages.torchvision.override { torch = torch; };
+  torch = python3Packages.torch.override { cudaSupport = true; };
+  torchvision = python3Packages.torchvision.override { torch = torch; };
 
-  relionClassRanker = python311Packages.buildPythonPackage {
+  relionClassRanker = python3Packages.buildPythonPackage {
     pname = "relion-classranker";
     version = "0.0.1";
 
@@ -33,7 +33,7 @@ let
     };
 
     dependencies =
-      with python311Packages;
+      with python3Packages;
       [
         numpy
       ]
@@ -44,12 +44,12 @@ let
 
     pyproject = true;
 
-    build-system = with python311Packages; [
+    build-system = with python3Packages; [
       setuptools
     ];
   };
 
-  topaz = python311Packages.buildPythonPackage {
+  topaz = python3Packages.buildPythonPackage {
     pname = "topaz";
     version = "0.2.5a";
 
@@ -60,15 +60,16 @@ let
       hash = "sha256-YHpXf6XkwVGpNPlZSwzKbslfIGZpPU6u1CIqnOdQI9c=";
     };
 
+    pythonRemoveDeps = [ "future" ];
+
     dependencies =
-      with python311Packages;
+      with python3Packages;
       [
         numpy
         pandas
         scikit-learn
         scipy
         pillow
-        future
       ]
       ++ [
         torch
@@ -76,12 +77,12 @@ let
 
     pyproject = true;
 
-    build-system = with python311Packages; [
+    build-system = with python3Packages; [
       setuptools
     ];
   };
 
-  python = python311.withPackages (ps: [
+  python = python3.withPackages (ps: [
     relionClassRanker
     topaz
   ]);
