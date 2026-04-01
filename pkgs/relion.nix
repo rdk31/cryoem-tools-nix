@@ -13,7 +13,7 @@
   pbzip2,
   xz,
   zstd,
-  cudaPackages,
+  cudaPackages_12_8,
   python3,
   python3Packages,
 }:
@@ -87,7 +87,7 @@ let
     topaz
   ]);
 in
-cudaPackages.backendStdenv.mkDerivation rec {
+cudaPackages_12_8.backendStdenv.mkDerivation rec {
   name = "relion";
   version = "5.0.1";
 
@@ -103,7 +103,7 @@ cudaPackages.backendStdenv.mkDerivation rec {
   cmakeFlags = [
     "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
     "-DFETCH_WEIGHTS=OFF"
-    "-DCUDA_TOOLKIT_ROOT_DIR=${cudaPackages.cudatoolkit}"
+    "-DCUDA_TOOLKIT_ROOT_DIR=${cudaPackages_12_8.cudatoolkit}"
     "-DPYTHON_EXE_PATH=${python}/bin/${python.executable}"
     "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" # https://github.com/NixOS/nixpkgs/issues/445447
   ];
