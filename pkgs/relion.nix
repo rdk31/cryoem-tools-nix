@@ -18,6 +18,9 @@
   python311Packages,
 }:
 let
+  torch = python311Packages.torch.override { cudaSupport = true; };
+  torchvision = python311Packages.torchvision.override { torch = torch; };
+
   relionClassRanker = python311Packages.buildPythonPackage {
     pname = "relion-classranker";
     version = "0.0.1";
@@ -29,11 +32,15 @@ let
       hash = "sha256-rZ9q3oisXYFQaP/89ad9DQU5OEufil00JN17OLUV6Go=";
     };
 
-    dependencies = with python311Packages; [
-      numpy
-      torch-bin
-      torchvision-bin
-    ];
+    dependencies =
+      with python311Packages;
+      [
+        numpy
+      ]
+      ++ [
+        torch
+        torchvision
+      ];
 
     pyproject = true;
 
@@ -53,15 +60,19 @@ let
       hash = "sha256-YHpXf6XkwVGpNPlZSwzKbslfIGZpPU6u1CIqnOdQI9c=";
     };
 
-    dependencies = with python311Packages; [
-      torch-bin
-      numpy
-      pandas
-      scikit-learn
-      scipy
-      pillow
-      future
-    ];
+    dependencies =
+      with python311Packages;
+      [
+        numpy
+        pandas
+        scikit-learn
+        scipy
+        pillow
+        future
+      ]
+      ++ [
+        torch
+      ];
 
     pyproject = true;
 
