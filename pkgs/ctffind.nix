@@ -2,7 +2,7 @@
   lib,
   stdenv,
   fetchzip,
-  wxGTK32,
+  wxwidgets_3_3,
   fftw,
   fftwFloat,
   libz,
@@ -21,7 +21,7 @@ stdenv.mkDerivation (finalAttrs: {
   };
 
   buildInputs = [
-    wxGTK32
+    wxwidgets_3_3
     fftw
     fftw.dev
     fftwFloat
