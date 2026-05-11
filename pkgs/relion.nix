@@ -21,6 +21,86 @@ let
   torch = python3Packages.torch.override { cudaSupport = true; };
   torchvision = python3Packages.torchvision.override { torch = torch; };
 
+  skan = python3Packages.buildPythonPackage rec {
+    pname = "skan";
+    version = "0.13.1";
+
+    src = fetchFromGitHub {
+      owner = "jni";
+      repo = "skan";
+      rev = "v${version}";
+      hash = "sha256-RhY46LeELnAH+s2/j8yF3ifNeOFqdwS0l5JYqtlRvBc=";
+    };
+
+    dependencies = with python3Packages; [
+      imageio
+      matplotlib
+      networkx
+      numba
+      numpy
+      pandas
+      openpyxl
+      scikit-image
+      scipy
+      toolz
+      tqdm
+    ];
+
+    pyproject = true;
+
+    build-system = with python3Packages; [
+      setuptools
+      setuptools-scm
+    ];
+  };
+
+  starfile = python3Packages.buildPythonPackage rec {
+    pname = "starfile";
+    version = "0.5.13";
+
+    src = fetchFromGitHub {
+      owner = "teamtomo";
+      repo = "starfile";
+      rev = "v${version}";
+      hash = "sha256-klGGDvfRIBAwUoPvEG5qYukzWO94otUmBoMIkjf307I=";
+    };
+
+    dependencies = with python3Packages; [
+      numpy
+      pandas
+      pyarrow
+    ];
+
+    pyproject = true;
+
+    build-system = with python3Packages; [
+      hatchling
+      hatch-vcs
+    ];
+  };
+
+  mrcfile = python3Packages.buildPythonPackage rec {
+    pname = "mrcfile";
+    version = "1.5.4";
+
+    src = fetchFromGitHub {
+      owner = "ccpem";
+      repo = "mrcfile";
+      rev = "v${version}";
+      hash = "sha256-513R/R1Sa4lZq5a1Kf3phmmuCNz6YTp3wBdOXwidfkA=";
+    };
+
+    dependencies = with python3Packages; [
+      numpy
+    ];
+
+    pyproject = true;
+
+    build-system = with python3Packages; [
+      setuptools
+    ];
+  };
+
   relionClassRanker = python3Packages.buildPythonPackage {
     pname = "relion-classranker";
     version = "0.0.1";
@@ -85,17 +165,25 @@ let
   python = python3.withPackages (ps: [
     relionClassRanker
     topaz
+
+    # trace_amyloids.py
+    starfile
+    mrcfile
+    ps.matplotlib
+    ps.scikit-image
+    skan
+    ps.opencv-python-headless
   ]);
 in
 cudaPackages_12_8.backendStdenv.mkDerivation rec {
   name = "relion";
-  version = "5.0.1";
+  version = "5.1.0";
 
   src = fetchFromGitHub {
     owner = "3dem";
     repo = "relion";
     rev = version;
-    sha256 = "sha256-wyNlz/ZXUlYUAnHGOlriVE1VP5vo5sbKFn4V/UHiLcg=";
+    sha256 = "sha256-PxzuvMOIKoBjqgAFThbie/wZG0cvlEQEjUt6054zBuU=";
   };
 
   nativeBuildInputs = [ cmake ];
@@ -131,4 +219,8 @@ cudaPackages_12_8.backendStdenv.mkDerivation rec {
     xz
     zstd
   ];
+
+  postInstall = ''
+    substituteInPlace $out/bin/relion_python_trace_amyloids --replace "relion_home=\"/build/source/build\"" "relion_home=\"$out\""
+  '';
 }
