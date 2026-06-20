@@ -1,28 +1,39 @@
 name: build
 
 on:
+  pull_request:
   push:
 
 jobs:
-  package:
+  nix-matrix:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        package:
-          - cisTEM
-          - ctffind
-          - relion
-          - TEM-simulator
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v5
+      - uses: DeterminateSystems/nix-installer-action@main
+      - id: set-matrix
+        name: Generate Nix Matrix
+        run: |
+          set -Eeu
+          matrix="$(nix eval --json '.#githubActions.matrix')"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
+  nix-build:
+    name: ${{ matrix.name }} (${{ matrix.system }})
+    needs: nix-matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.nix-matrix.outputs.matrix)}}
+    steps:
+      - uses: actions/checkout@v5
       - name: Install nix
         uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
             substituters = https://cache.nixos-cuda.org?priority=40 https://nix-community.cachix.org?priority=41 https://cache.nixos.org/
             trusted-public-keys = cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
-      - run: nix build --print-build-logs --impure .#packages.x86_64-linux.${{ matrix.package }}
+      - run: nix build --print-build-logs --impure '.#${{ matrix.attr }}'
         env:
           NIXPKGS_ALLOW_UNFREE: "1"
