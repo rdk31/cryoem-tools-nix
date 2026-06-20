@@ -1,5 +1,7 @@
 {
   fetchFromGitHub,
+  lib,
+
   cmake,
   mpi,
   ghostscript,
@@ -162,11 +164,11 @@ let
     ];
   };
 
-  python = python3.withPackages (ps: [
+  pythonEnv = python3.withPackages (ps: [
     relionClassRanker
     topaz
 
-    # trace_amyloids.py
+    # required for trace_amyloids.py
     starfile
     mrcfile
     ps.matplotlib
@@ -174,8 +176,10 @@ let
     skan
     ps.opencv-python-headless
   ]);
+
+  cudaPackages = cudaPackages_12_8;
 in
-cudaPackages_12_8.backendStdenv.mkDerivation rec {
+cudaPackages.backendStdenv.mkDerivation rec {
   name = "relion";
   version = "5.1.0";
 
@@ -191,8 +195,8 @@ cudaPackages_12_8.backendStdenv.mkDerivation rec {
   cmakeFlags = [
     "-DCMAKE_BUILD_TYPE=RelWithDebInfo"
     "-DFETCH_WEIGHTS=OFF"
-    "-DCUDA_TOOLKIT_ROOT_DIR=${cudaPackages_12_8.cudatoolkit}"
-    "-DPYTHON_EXE_PATH=${python}/bin/${python.executable}"
+    "-DCUDAToolkit_ROOT=${cudaPackages.cudatoolkit}"
+    "-DPYTHON_EXE_PATH=${lib.getBin pythonEnv}/bin/python"
     "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" # https://github.com/NixOS/nixpkgs/issues/445447
   ];
 
@@ -207,6 +211,8 @@ cudaPackages_12_8.backendStdenv.mkDerivation rec {
     fltk
     libxft
     libx11
+
+    cudaPackages.cuda_cudart
 
     fftw
     fftw.dev
