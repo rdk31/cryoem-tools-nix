@@ -30,12 +30,12 @@ jobs:
       matrix: ${{fromJSON(needs.nix-matrix.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v7
-      - name: Install nix
-        uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
             substituters = https://cache.nixos-cuda.org?priority=40 https://nix-community.cachix.org?priority=41 https://cache.nixos.org/
             trusted-public-keys = cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+      - uses: DeterminateSystems/magic-nix-cache-action@main
       - run: nix build --print-build-logs --impure '.#${{ matrix.attr }}'
         env:
           NIXPKGS_ALLOW_UNFREE: "1"
