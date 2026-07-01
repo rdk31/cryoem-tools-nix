@@ -37,7 +37,7 @@
         {
           packages = {
             TEM-simulator = pkgs.callPackage ./pkgs/TEM-simulator.nix { };
-            relion = pkgs.callPackage ./pkgs/relion.nix { };
+            relion = pkgs.callPackage ./pkgs/relion { };
             ctffind = pkgs.callPackage ./pkgs/ctffind.nix { };
             cisTEM = pkgs.callPackage ./pkgs/cisTEM.nix { };
           };

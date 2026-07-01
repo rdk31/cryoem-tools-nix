@@ -144,6 +144,10 @@ let
 
     pythonRemoveDeps = [ "future" ];
 
+    patches = [
+      ./topaz.patch # https://github.com/3dem/topaz/pull/1
+    ];
+
     dependencies =
       with python3Packages;
       [

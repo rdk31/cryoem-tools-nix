@@ -1,0 +1,23 @@
+From 4384b4601a447df97b4c2a426b8c4efff6b4d043 Mon Sep 17 00:00:00 2001
+From: Michael O'Brien <24856964+michael-0brien@users.noreply.github.com>
+Date: Tue, 30 Jun 2026 15:25:42 -0400
+Subject: [PATCH] Ensure that index calculation uses python `int`s, rather than
+ `torch.uint32`
+
+---
+ topaz/utils/data/sampler.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/topaz/utils/data/sampler.py b/topaz/utils/data/sampler.py
+index 5147f17..e5a1f54 100644
+--- a/topaz/utils/data/sampler.py
++++ b/topaz/utils/data/sampler.py
+@@ -154,7 +154,7 @@ def __next__(self):
+ 
+         # code as integer
+         # unfortunate hack required because pytorch converts index to integer...
+-        h = i*2**56 + j*2**32 + c
++        h = int(i)*2**56 + int(j)*2**32 + int(c)
+         return h
+         #return i//2, sample
+ 
