@@ -17,11 +17,11 @@
   xz,
   zstd,
   cudaPackages_12_8,
-  python311Packages,
+  python312Packages,
 }:
 let
   cudaPackages = cudaPackages_12_8;
-  pythonPackages = python311Packages;
+  pythonPackages = python312Packages;
 
   skan = callPackage ./skan.nix { inherit pythonPackages; };
   starfile = callPackage ./starfile.nix { inherit pythonPackages; };
