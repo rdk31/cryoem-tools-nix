@@ -1,8 +1,8 @@
 {
   fetchFromGitHub,
-  python3Packages,
+  pythonPackages,
 }:
-python3Packages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage rec {
   pname = "skan";
   version = "0.13.1";
 
@@ -13,7 +13,7 @@ python3Packages.buildPythonPackage rec {
     hash = "sha256-RhY46LeELnAH+s2/j8yF3ifNeOFqdwS0l5JYqtlRvBc=";
   };
 
-  dependencies = with python3Packages; [
+  dependencies = with pythonPackages; [
     imageio
     matplotlib
     networkx
@@ -28,7 +28,7 @@ python3Packages.buildPythonPackage rec {
   ];
 
   pyproject = true;
-  build-system = with python3Packages; [
+  build-system = with pythonPackages; [
     setuptools
     setuptools-scm
   ];

@@ -1,8 +1,8 @@
 {
   fetchFromGitHub,
-  python3Packages,
+  pythonPackages,
 }:
-python3Packages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage rec {
   pname = "starfile";
   version = "0.5.13";
 
@@ -13,14 +13,14 @@ python3Packages.buildPythonPackage rec {
     hash = "sha256-klGGDvfRIBAwUoPvEG5qYukzWO94otUmBoMIkjf307I=";
   };
 
-  dependencies = with python3Packages; [
+  dependencies = with pythonPackages; [
     numpy
     pandas
     pyarrow
   ];
 
   pyproject = true;
-  build-system = with python3Packages; [
+  build-system = with pythonPackages; [
     hatchling
     hatch-vcs
   ];

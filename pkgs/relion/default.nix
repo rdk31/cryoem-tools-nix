@@ -17,19 +17,19 @@
   xz,
   zstd,
   cudaPackages_12_8,
-  python3,
-  python3Packages,
+  python311Packages,
 }:
 let
   cudaPackages = cudaPackages_12_8;
+  pythonPackages = python311Packages;
 
-  skan = callPackage ./skan.nix { };
-  starfile = callPackage ./starfile.nix { };
-  mrcfile = callPackage ./mrcfile.nix { };
-  relionClassRanker = callPackage ./class-ranker.nix { inherit cudaPackages; };
-  topaz = callPackage ./topaz.nix { inherit cudaPackages; };
+  skan = callPackage ./skan.nix { inherit pythonPackages; };
+  starfile = callPackage ./starfile.nix { inherit pythonPackages; };
+  mrcfile = callPackage ./mrcfile.nix { inherit pythonPackages; };
+  relionClassRanker = callPackage ./class-ranker.nix { inherit cudaPackages pythonPackages; };
+  topaz = callPackage ./topaz.nix { inherit cudaPackages pythonPackages; };
 
-  pythonEnv = python3.withPackages (ps: [
+  pythonEnv = pythonPackages.python.withPackages (ps: [
     relionClassRanker
     topaz
 

@@ -1,8 +1,8 @@
 {
   fetchFromGitHub,
-  python3Packages,
+  pythonPackages,
 }:
-python3Packages.buildPythonPackage rec {
+pythonPackages.buildPythonPackage rec {
   pname = "mrcfile";
   version = "1.5.4";
 
@@ -13,8 +13,8 @@ python3Packages.buildPythonPackage rec {
     hash = "sha256-513R/R1Sa4lZq5a1Kf3phmmuCNz6YTp3wBdOXwidfkA=";
   };
 
-  dependencies = [ python3Packages.numpy ];
+  dependencies = [ pythonPackages.numpy ];
 
   pyproject = true;
-  build-system = [ python3Packages.setuptools ];
+  build-system = [ pythonPackages.setuptools ];
 }
