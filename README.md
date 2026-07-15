@@ -28,10 +28,8 @@ In your system configuration:
 ```nix
 { inputs, pkgs, ... }: # Make sure the flake inputs are in your system's config
 {
-  nixpkgs.overlays = [ inputs.cryoem-tools-nix.overlays.default ];
-
   environment.systemPackages = with pkgs; [
-    relion
+    inputs.cryoem-tools-nix.packages.${pkgs.system}.relion
   ];
 }
 ```
