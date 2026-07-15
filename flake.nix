@@ -30,25 +30,34 @@
       imports = [
         inputs.flake-parts.flakeModules.easyOverlay
       ];
-      systems = [ "x86_64-linux" ];
+      systems = [
+        "aarch64-linux"
+        "x86_64-linux"
+      ];
       flake.githubActions = inputs.nix-github-actions.lib.mkGithubMatrix { checks = self.packages; };
       perSystem =
         { config, pkgs, ... }:
         {
-          packages = {
-            TEM-simulator = pkgs.callPackage ./pkgs/TEM-simulator.nix { };
-            relion = pkgs.callPackage ./pkgs/relion { };
-            ctffind = pkgs.callPackage ./pkgs/ctffind.nix { };
-            cisTEM = pkgs.callPackage ./pkgs/cisTEM.nix { };
-          };
-          overlayAttrs = {
-            inherit (config.packages)
-              TEM-simulator
-              relion
-              ctffind
-              cisTEM
-              ;
-          };
+          packages =
+            {
+              TEM-simulator = pkgs.callPackage ./pkgs/TEM-simulator.nix { };
+              relion = pkgs.callPackage ./pkgs/relion { };
+              ctffind = pkgs.callPackage ./pkgs/ctffind.nix { };
+            }
+            // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isx86_64 {
+              cisTEM = pkgs.callPackage ./pkgs/cisTEM.nix { };
+            };
+          overlayAttrs =
+            {
+              inherit (config.packages)
+                TEM-simulator
+                relion
+                ctffind
+                ;
+            }
+            // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isx86_64 {
+              inherit (config.packages) cisTEM;
+            };
         };
     };
 }

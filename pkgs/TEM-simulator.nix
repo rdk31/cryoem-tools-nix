@@ -21,6 +21,8 @@ stdenv.mkDerivation (finalAttrs: {
   patchPhase = ''
     substituteInPlace src/Makefile \
       --replace-fail /usr/bin/gcc ${gcc}/bin/gcc
+    substituteInPlace src/matrix.c \
+      --replace-fail 'if(header != NULL)' 'if(nhead > 0)'
   '';
 
   buildPhase = ''

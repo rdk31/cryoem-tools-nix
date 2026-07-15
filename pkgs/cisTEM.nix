@@ -9,7 +9,7 @@
   wxwidgets_3_3,
   libtiff,
   libpng,
-  mklSupport ? true,
+  mklSupport ? stdenv.hostPlatform.isx86_64,
   mkl,
 }:
 stdenv.mkDerivation (finalAttrs: {
