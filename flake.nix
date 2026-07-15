@@ -42,7 +42,7 @@
             {
               TEM-simulator = pkgs.callPackage ./pkgs/TEM-simulator.nix { };
               relion = pkgs.callPackage ./pkgs/relion { };
-              ctffind = pkgs.callPackage ./pkgs/ctffind.nix { };
+              ctffind4 = pkgs.callPackage ./pkgs/ctffind4.nix { };
             }
             // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isx86_64 {
               cisTEM = pkgs.callPackage ./pkgs/cisTEM.nix { };
@@ -52,7 +52,7 @@
               inherit (config.packages)
                 TEM-simulator
                 relion
-                ctffind
+                ctffind4
                 ;
             }
             // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isx86_64 {

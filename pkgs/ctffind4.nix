@@ -12,7 +12,7 @@
   mkl,
 }:
 stdenv.mkDerivation (finalAttrs: {
-  pname = "ctffind";
+  pname = "ctffind4";
   version = "4.1.14";
 
   src = fetchzip {
