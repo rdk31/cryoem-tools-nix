@@ -89,6 +89,8 @@ cudaPackages.backendStdenv.mkDerivation rec {
     zstd
   ];
 
+  propagatedBuildInputs = [ mpi ];
+
   postInstall = ''
     substituteInPlace $out/bin/relion_python_trace_amyloids --replace "relion_home=\"/build/source/build\"" "relion_home=\"$out\""
   '';
