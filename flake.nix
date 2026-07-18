@@ -4,10 +4,12 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.nixos-cuda.org"
+      "https://cache.flox.dev"
       "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+      "flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
     ];
   };
@@ -38,26 +40,24 @@
       perSystem =
         { config, pkgs, ... }:
         {
-          packages =
-            {
-              TEM-simulator = pkgs.callPackage ./pkgs/TEM-simulator.nix { };
-              relion = pkgs.callPackage ./pkgs/relion { };
-              ctffind4 = pkgs.callPackage ./pkgs/ctffind4.nix { };
-            }
-            // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isx86_64 {
-              cisTEM = pkgs.callPackage ./pkgs/cisTEM.nix { };
-            };
-          overlayAttrs =
-            {
-              inherit (config.packages)
-                TEM-simulator
-                relion
-                ctffind4
-                ;
-            }
-            // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isx86_64 {
-              inherit (config.packages) cisTEM;
-            };
+          packages = {
+            TEM-simulator = pkgs.callPackage ./pkgs/TEM-simulator.nix { };
+            relion = pkgs.callPackage ./pkgs/relion { };
+            ctffind4 = pkgs.callPackage ./pkgs/ctffind4.nix { };
+          }
+          // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isx86_64 {
+            cisTEM = pkgs.callPackage ./pkgs/cisTEM.nix { };
+          };
+          overlayAttrs = {
+            inherit (config.packages)
+              TEM-simulator
+              relion
+              ctffind4
+              ;
+          }
+          // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isx86_64 {
+            inherit (config.packages) cisTEM;
+          };
         };
     };
 }
