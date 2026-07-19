@@ -3,7 +3,7 @@ updates:
   - package-ecosystem: "nix"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
 
   - package-ecosystem: "github-actions"
     directory: "/"
