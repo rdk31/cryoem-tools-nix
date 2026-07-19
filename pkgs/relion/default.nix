@@ -1,7 +1,9 @@
 {
-  callPackage,
-  fetchFromGitHub,
   lib,
+  fetchFromGitHub,
+
+  python312,
+  cudaPackages_12_8,
 
   cmake,
   mpi,
@@ -16,40 +18,51 @@
   pbzip2,
   xz,
   zstd,
-  cudaPackages_12_8,
-  python312Packages,
 }:
 let
   cudaPackages = cudaPackages_12_8;
-  pythonPackages = python312Packages;
+  python = (
+    python312.override {
+      packageOverrides = final: prev: {
+        torch = (
+          prev.torch.override {
+            cudaSupport = true;
+            inherit cudaPackages;
+          }
+        );
 
-  skan = callPackage ./skan.nix { inherit pythonPackages; };
-  starfile = callPackage ./starfile.nix { inherit pythonPackages; };
-  mrcfile = callPackage ./mrcfile.nix { inherit pythonPackages; };
-  relionClassRanker = callPackage ./class-ranker.nix { inherit cudaPackages pythonPackages; };
-  topaz = callPackage ./topaz.nix { inherit cudaPackages pythonPackages; };
+        skan = final.callPackage ./skan.nix { };
+        starfile = final.callPackage ./starfile.nix { };
+        mrcfile = final.callPackage ./mrcfile.nix { };
+        relionClassRanker = final.callPackage ./class-ranker.nix { };
+        topaz = final.callPackage ./topaz.nix { };
+      };
+    }
+  );
 
-  pythonEnv = pythonPackages.python.withPackages (ps: [
-    relionClassRanker
-    topaz
+  pythonEnv = python.withPackages (
+    ps: with ps; [
+      relionClassRanker
+      topaz
 
-    # required for trace_amyloids.py
-    starfile
-    mrcfile
-    ps.matplotlib
-    ps.scikit-image
-    skan
-    ps.opencv-python-headless
-  ]);
+      # required for trace_amyloids.py
+      starfile
+      mrcfile
+      matplotlib
+      scikit-image
+      skan
+      opencv-python-headless
+    ]
+  );
 in
-cudaPackages.backendStdenv.mkDerivation rec {
+cudaPackages.backendStdenv.mkDerivation (finalAttrs: {
   name = "relion";
   version = "5.1.0";
 
   src = fetchFromGitHub {
     owner = "3dem";
     repo = "relion";
-    rev = version;
+    rev = finalAttrs.version;
     sha256 = "sha256-PxzuvMOIKoBjqgAFThbie/wZG0cvlEQEjUt6054zBuU=";
   };
 
@@ -63,6 +76,7 @@ cudaPackages.backendStdenv.mkDerivation rec {
     "-DCMAKE_POLICY_VERSION_MINIMUM=3.5" # https://github.com/NixOS/nixpkgs/issues/445447
   ];
 
+  enableParallelBuilding = true;
   hardeningDisable = [ "format" ];
   dontStrip = true;
 
@@ -94,4 +108,4 @@ cudaPackages.backendStdenv.mkDerivation rec {
   postInstall = ''
     substituteInPlace $out/bin/relion_python_trace_amyloids --replace "relion_home=\"/build/source/build\"" "relion_home=\"$out\""
   '';
-}
+})

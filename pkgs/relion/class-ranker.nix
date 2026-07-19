@@ -1,18 +1,17 @@
 {
+  buildPythonPackage,
   fetchFromGitHub,
-  pythonPackages,
-  cudaPackages,
+
+  setuptools,
+
+  numpy,
+  torch,
+  torchvision,
 }:
-let
-  torch = pythonPackages.torch.override {
-    cudaSupport = true;
-    inherit cudaPackages;
-  };
-  torchvision = pythonPackages.torchvision.override { inherit torch; };
-in
-pythonPackages.buildPythonPackage {
+buildPythonPackage {
   pname = "relion-classranker";
   version = "0.0.1";
+  pyproject = true;
 
   src = fetchFromGitHub {
     owner = "3dem";
@@ -21,12 +20,11 @@ pythonPackages.buildPythonPackage {
     hash = "sha256-rZ9q3oisXYFQaP/89ad9DQU5OEufil00JN17OLUV6Go=";
   };
 
-  dependencies = with pythonPackages; [
+  build-system = [ setuptools ];
+
+  dependencies = [
     numpy
     torch
     torchvision
   ];
-
-  pyproject = true;
-  build-system = [ pythonPackages.setuptools ];
 }

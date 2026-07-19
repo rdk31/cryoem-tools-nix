@@ -1,17 +1,20 @@
 {
+  buildPythonPackage,
   fetchFromGitHub,
-  pythonPackages,
-  cudaPackages,
+
+  setuptools,
+
+  numpy,
+  pandas,
+  scikit-learn,
+  scipy,
+  pillow,
+  torch,
 }:
-let
-  torch = pythonPackages.torch.override {
-    cudaSupport = true;
-    inherit cudaPackages;
-  };
-in
-pythonPackages.buildPythonPackage {
+buildPythonPackage {
   pname = "topaz";
   version = "0.2.5a";
+  pyproject = true;
 
   src = fetchFromGitHub {
     owner = "3dem";
@@ -20,10 +23,9 @@ pythonPackages.buildPythonPackage {
     hash = "sha256-YHpXf6XkwVGpNPlZSwzKbslfIGZpPU6u1CIqnOdQI9c=";
   };
 
-  pythonRemoveDeps = [ "future" ];
-  patches = [ ./topaz.patch ];
+  build-system = [ setuptools ];
 
-  dependencies = with pythonPackages; [
+  dependencies = [
     numpy
     pandas
     scikit-learn
@@ -32,6 +34,7 @@ pythonPackages.buildPythonPackage {
     torch
   ];
 
-  pyproject = true;
-  build-system = [ pythonPackages.setuptools ];
+  patches = [ ./topaz.patch ];
+
+  pythonRemoveDeps = [ "future" ];
 }

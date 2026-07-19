@@ -1,20 +1,24 @@
 {
+  buildPythonPackage,
   fetchFromGitHub,
-  pythonPackages,
+
+  setuptools,
+
+  numpy,
 }:
-pythonPackages.buildPythonPackage rec {
+buildPythonPackage (finalAttrs: {
   pname = "mrcfile";
   version = "1.5.4";
+  pyproject = true;
 
   src = fetchFromGitHub {
     owner = "ccpem";
     repo = "mrcfile";
-    rev = "v${version}";
+    rev = "v${finalAttrs.version}";
     hash = "sha256-513R/R1Sa4lZq5a1Kf3phmmuCNz6YTp3wBdOXwidfkA=";
   };
 
-  dependencies = [ pythonPackages.numpy ];
+  build-system = [ setuptools ];
 
-  pyproject = true;
-  build-system = [ pythonPackages.setuptools ];
-}
+  dependencies = [ numpy ];
+})

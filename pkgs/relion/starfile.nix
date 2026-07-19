@@ -1,27 +1,38 @@
 {
+  buildPythonPackage,
   fetchFromGitHub,
-  pythonPackages,
+
+  hatchling,
+  hatch-vcs,
+
+  numpy,
+  pandas,
+  pyarrow,
+
+  typing-extensions,
 }:
-pythonPackages.buildPythonPackage rec {
+buildPythonPackage (finalAttrs: {
   pname = "starfile";
   version = "0.5.13";
+  pyproject = true;
 
   src = fetchFromGitHub {
     owner = "teamtomo";
     repo = "starfile";
-    rev = "v${version}";
+    rev = "v${finalAttrs.version}";
     hash = "sha256-klGGDvfRIBAwUoPvEG5qYukzWO94otUmBoMIkjf307I=";
   };
 
-  dependencies = with pythonPackages; [
+  build-system = [
+    hatchling
+    hatch-vcs
+  ];
+
+  dependencies = [
     numpy
     pandas
     pyarrow
   ];
 
-  pyproject = true;
-  build-system = with pythonPackages; [
-    hatchling
-    hatch-vcs
-  ];
-}
+  nativeCheckInputs = [ typing-extensions ];
+})

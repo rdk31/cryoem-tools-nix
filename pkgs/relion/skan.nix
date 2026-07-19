@@ -1,35 +1,50 @@
 {
+  buildPythonPackage,
   fetchFromGitHub,
-  pythonPackages,
+
+  setuptools,
+  setuptools-scm,
+
+  imageio,
+  matplotlib,
+  networkx,
+  numba,
+  numpy,
+  openpyxl,
+  pandas,
+  scikit-image,
+  scipy,
+  toolz,
+  tqdm,
 }:
-pythonPackages.buildPythonPackage rec {
+buildPythonPackage (finalAttrs: {
   pname = "skan";
   version = "0.13.1";
+  pyproject = true;
 
   src = fetchFromGitHub {
     owner = "jni";
     repo = "skan";
-    rev = "v${version}";
+    rev = "v${finalAttrs.version}";
     hash = "sha256-RhY46LeELnAH+s2/j8yF3ifNeOFqdwS0l5JYqtlRvBc=";
   };
 
-  dependencies = with pythonPackages; [
+  build-system = [
+    setuptools
+    setuptools-scm
+  ];
+
+  dependencies = [
     imageio
     matplotlib
     networkx
     numba
     numpy
-    pandas
     openpyxl
+    pandas
     scikit-image
     scipy
     toolz
     tqdm
   ];
-
-  pyproject = true;
-  build-system = with pythonPackages; [
-    setuptools
-    setuptools-scm
-  ];
-}
+})
