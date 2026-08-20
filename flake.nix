@@ -38,8 +38,18 @@
       ];
       flake.githubActions = inputs.nix-github-actions.lib.mkGithubMatrix { checks = self.packages; };
       perSystem =
-        { config, pkgs, ... }:
         {
+          config,
+          pkgs,
+          system,
+          ...
+        }:
+        {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+
           packages = {
             TEM-simulator = pkgs.callPackage ./pkgs/TEM-simulator.nix { };
             relion = pkgs.callPackage ./pkgs/relion { };
@@ -48,6 +58,7 @@
           // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isx86_64 {
             cisTEM = pkgs.callPackage ./pkgs/cisTEM.nix { };
           };
+
           overlayAttrs = {
             inherit (config.packages)
               TEM-simulator
