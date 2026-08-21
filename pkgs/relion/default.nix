@@ -90,6 +90,8 @@ cudaPackages.backendStdenv.mkDerivation (finalAttrs: {
     libx11
 
     cudaPackages.cuda_cudart
+    cudaPackages.libcufft
+    cudaPackages.libcurand
 
     fftw
     fftw.dev

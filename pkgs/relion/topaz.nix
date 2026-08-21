@@ -12,7 +12,7 @@
   torch,
 }:
 buildPythonPackage {
-  pname = "topaz";
+  pname = "topaz-em";
   version = "0.2.5a";
   pyproject = true;
 
