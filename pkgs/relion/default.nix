@@ -24,6 +24,17 @@ let
   python = (
     python312.override {
       packageOverrides = final: prev: {
+        openai = prev.openai.override {
+          inline-snapshot = prev.inline-snapshot.overridePythonAttrs (old: {
+            # Documentation snapshots differ with the Black version in pinned nixpkgs.
+            disabledTestPaths = (old.disabledTestPaths or [ ]) ++ [
+              "tests/test_docs.py::test_docs[code_generation.md]"
+              "tests/test_docs.py::test_docs[testing.md]"
+              "tests/test_docs.py::test_docs[categories.md]"
+            ];
+          });
+        };
+
         torch = (
           prev.torch.override {
             cudaSupport = true;
