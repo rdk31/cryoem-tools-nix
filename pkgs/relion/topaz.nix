@@ -36,5 +36,11 @@ buildPythonPackage {
 
   patches = [ ./topaz.patch ];
 
+  postPatch = ''
+    substituteInPlace topaz/model/factory.py topaz/denoise.py topaz/commands/denoise3d.py \
+      --replace-fail "import pkg_resources" "from importlib.resources import files" \
+      --replace-fail "pkg_resources.resource_stream(pkg, path)" "files(pkg).joinpath(path).open('rb')"
+  '';
+
   pythonRemoveDeps = [ "future" ];
 }
