@@ -77,6 +77,11 @@ cudaPackages.backendStdenv.mkDerivation (finalAttrs: {
     sha256 = "sha256-PxzuvMOIKoBjqgAFThbie/wZG0cvlEQEjUt6054zBuU=";
   };
 
+  postPatch = ''
+    substituteInPlace src/CPlot2D.cpp \
+      --replace-fail '"gs ' '"${lib.getBin ghostscript}/bin/gs '
+  '';
+
   nativeBuildInputs = [ cmake ];
 
   cmakeFlags = [
